@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Events</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">NASA Events</h1>
+        <form id="eventForm" class="mt-3">
+            <div class="form-group">
+                <label for="limit">Limit: {limit}</label>
+                <!--input type="number" class="form-control" id="limit" name="limit" required-->
+            </div>
+            <div class="form-group">
+                <label for="days">Days:</label>
+                <input type="number" class="form-control" id="days" name="days" required>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="fetchEvents()">Fetch Events</button>
+            <button type="button" class="btn btn-secondary" onclick="saveJson()">Save to JSON</button>
+             <button onclick="window.location.href='/'">Zurück zum Anfang</button>
+        </form>
+        <table class="table table-striped mt-3" id="eventsTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Link</th>
+                    <th>Categories</th>
+                    <th>Sources</th>
+                    <th>Geometry Date</th>
+                    <th>Geometry Type</th>
+                    <th>Geometry Coordinates</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function fetchEvents() {
+            const limit = document.getElementById('limit').value;
+            const days = document.getElementById('days').value;
+            fetch('/fetch_events', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `limit=${limit}&days=${days}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('eventsTable').getElementsByTagName('tbody')[0];
+                tableBody.innerHTML = '';
+                data.forEach(event => {
+                    const row = tableBody.insertRow();
+                    row.insertCell(0).innerText = event.ID;
+                    row.insertCell(1).innerText = event.Title;
+                    row.insertCell(2).innerText = event.Description;
+                    row.insertCell(3).innerHTML = `<a href="${event.Link}" target="_blank">${event.Link}</a>`;
+                    row.insertCell(4).innerText = event.Categories;
+                    row.insertCell(5).innerText = event.Sources;
+                    row.insertCell(6).innerText = event['Geometry Date'];
+                    row.insertCell(7).innerText = event['Geometry Type'];
+                    row.insertCell(8).innerText = event['Geometry Coordinates'];
+                });
+            });
+        }
+
+        function saveJson() {
+            const limit = document.getElementById('limit').value;
+            const days = document.getElementById('days').value;
+            fetch('/save_json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `limit=${limit}&days=${days}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            });
+        }
+    </script>
+</body>
+</html>
