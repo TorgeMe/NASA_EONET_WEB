@@ -113,7 +113,16 @@ def index():
 
 @app.route("/data", methods=["POST"])
 def data():
-    return render_template("data.html")
+    config = read_config(config_path)
+    try:
+        limit = config.getint("Einstellungen", "limit")
+    except Exception:
+        limit = 10
+    try:
+        days = config.getint("Einstellungen", "days")
+    except Exception:
+        days = 10
+    return render_template("data.html", limit=limit, days=days)
 
 @app.route("/preferences", methods=["GET"])
 def preferences():
@@ -136,6 +145,15 @@ def update_preferences():
     with open(config_path, 'w') as configfile:
         config.write(configfile)
     return render_template('preferences.html', config={section: dict(config.items(section)) for section in config.sections()}, message='Einstellungen gespeichert!')
+
+@app.route('/shutdown', methods=['POST'])
+def shutdown():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+    return 'Server shutting down...'
+
 
 if __name__ == '__main__':
     get_config() 

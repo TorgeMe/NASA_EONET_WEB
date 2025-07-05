@@ -18,7 +18,7 @@
     </form>
     <form action="preferences", method="GET">
         <input type="submit" value="Einstellungen">
-
     </form>
+    <button class="btn btn-danger mt-3" onclick="fetch('/shutdown', {method: 'POST'}).then(() => window.close())">Beenden</button>
 </body>
 </html>

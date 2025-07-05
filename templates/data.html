@@ -11,15 +11,16 @@
         <h1 class="mt-5">NASA Events</h1>
         <form id="eventForm" class="mt-3">
             <div class="form-group">
-                <label for="limit">Limit: '{limit}'</label>
-                <input type="number" class="form-control" id="limit" name="limit" required>
+                <label for="limit">Limit: {{ limit }}</label>
+                <input type="number" class="form-control" id="limit" name="limit" value="{{ limit }}" readonly>
             </div>
             <div class="form-group">
-                <label for="days">Days: '{days}'</label>
-                <input type="number" class="form-control" id="days" name="days" required>
+                <label for="days">Days: {{ days }}</label>
+                <input type="number" class="form-control" id="days" name="days" value="{{ days }}" readonly>
             </div>
             <button type="button" class="btn btn-primary" onclick="fetchEvents()">Fetch Events</button>
             <button type="button" class="btn btn-secondary" onclick="saveJson()">Save to JSON</button>
+            <button type="button" class="btn btn-info" onclick="window.location.href='/preferences'">Zu den Einstellungen</button>
             <button onclick="window.location.href='/'">Zurück zum Anfang</button>
         </form>
         <table class="table table-striped mt-3" id="eventsTable">
