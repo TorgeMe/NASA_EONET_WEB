@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import os
 import configparser
+import json
 
 app = Flask(__name__)
 
@@ -51,17 +52,7 @@ def get_config():
         save_default_config(config_path, default_config)
     else:
         print(f"Konfigurationsdatei '{config_path}' ist bereits vorhanden.")
-    
-    # Konfigurationsdaten einlesen
-    config = read_config(config_path)
-
-    # Config-Werte nutzen
-    username = config.get("Benutzer", "username")
-    activ_user = config.getboolean("Benutzer", "activ")
-    language = config.get("Benutzer", "language")
-    url = config.get("Einstellungen", "url")
-    limit = config.getint("Einstellungen", "limit")
-    days = config.getint("Einstellungen", "days")
+     
 
 def fetch_nasa_events(limit, days):
     url = f"https://eonet.gsfc.nasa.gov/api/v2.1/events?limit={limit}&days={days}"
@@ -121,11 +112,41 @@ def index():
     return render_template('index.html')
 
 @app.route("/data", methods=["POST"])
-def data(limit, days):
+def data():
     return render_template("data.html")
 
+@app.route("/preferences", methods=["GET"])
+def preferences():
+    config = read_config(config_path)
+    config_dict = {section: dict(config.items(section)) for section in config.sections()}
+    return render_template("preferences.html", config=config_dict)
+
+@app.route('/update_preferences', methods=['POST'])
+def update_preferences():
+    limit = request.form.get('limit')
+    days = request.form.get('days')
+    config = configparser.ConfigParser()
+    config.read(config_path)
+    if not config.has_section('Einstellungen'):
+        config.add_section('Einstellungen')
+    if limit is not None:
+        config.set('Einstellungen', 'limit', str(limit))
+    if days is not None:
+        config.set('Einstellungen', 'days', str(days))
+    with open(config_path, 'w') as configfile:
+        config.write(configfile)
+    return render_template('preferences.html', config={section: dict(config.items(section)) for section in config.sections()}, message='Einstellungen gespeichert!')
+
 if __name__ == '__main__':
-    get_config()    
+    get_config() 
+    # Konfigurationsdaten einlesen
+    config = read_config(config_path)   
+     # Config-Werte nutzen
+    username = config.get("Benutzer", "username")
+    activ_user = config.getboolean("Benutzer", "activ")
+    language = config.get("Benutzer", "language")
+    url = config.get("Einstellungen", "url")
+    limit = config.getint("Einstellungen", "limit")
+    days = config.getint("Einstellungen", "days")
     app.run(debug=True)
-    
-    
+
