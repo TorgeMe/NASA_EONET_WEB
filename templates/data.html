@@ -18,10 +18,11 @@
                 <label for="days">Days: {{ days }}</label>
                 <input type="number" class="form-control" id="days" name="days" value="{{ days }}" readonly>
             </div>
-            <button type="button" class="btn btn-primary" onclick="fetchEvents()">Fetch Events</button>
-            <button type="button" class="btn btn-secondary" onclick="saveJson()">Save to JSON</button>
+            <button type="button" class="btn btn-primary" onclick="fetchEvents()">Ereignisse abrufen</button>
+            <button type="button" class="btn btn-secondary" onclick="saveJson()">Speichern in JSON-Datei</button>
             <button type="button" class="btn btn-info" onclick="window.location.href='/preferences'">Zu den Einstellungen</button>
-            <button onclick="window.location.href='/'">Zurück zum Anfang</button>
+            <!--button onclick="window.location.href='/'">Zurück zum Anfang</button-->
+            <a href="/" class="btn btn-primary ml-2">Zurück zum Anfang</a>
         </form>
         <table class="table table-striped mt-3" id="eventsTable">
             <thead>

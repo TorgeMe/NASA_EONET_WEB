@@ -7,7 +7,7 @@ import json
 
 app = Flask(__name__)
 
-#Pfad zur Konfigurationsdatei
+# Pfad zur Konfigurationsdatei
 config_path = "config.ini"
 
 # Standardkonfiguration
@@ -85,7 +85,7 @@ def events_to_dataframe(events):
         return pd.DataFrame()
 
 
-
+# Fetch events and return as JSON
 @app.route('/fetch_events', methods=['POST'])
 def fetch_events():
     limit = request.form.get('limit')
@@ -94,6 +94,7 @@ def fetch_events():
     df = events_to_dataframe(events)
     return df.to_json(orient='records')
 
+# Save events to JSON file
 @app.route('/save_json', methods=['POST'])
 def save_json():
     limit = request.form.get('limit')
@@ -107,10 +108,12 @@ def save_json():
     else:
         return jsonify({"message": "Failed to fetch events"})
 
+# Startseite
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# Daten anzeigen
 @app.route("/data", methods=["POST"])
 def data():
     config = read_config(config_path)
@@ -124,12 +127,14 @@ def data():
         days = 10
     return render_template("data.html", limit=limit, days=days)
 
+# Einstellungen anzeigen 
 @app.route("/preferences", methods=["GET"])
 def preferences():
     config = read_config(config_path)
     config_dict = {section: dict(config.items(section)) for section in config.sections()}
     return render_template("preferences.html", config=config_dict)
 
+# Einstellungen updaten
 @app.route('/update_preferences', methods=['POST'])
 def update_preferences():
     limit = request.form.get('limit')
@@ -146,19 +151,24 @@ def update_preferences():
         config.write(configfile)
     return render_template('preferences.html', config={section: dict(config.items(section)) for section in config.sections()}, message='Einstellungen gespeichert!')
 
+# Web-Anwendung beenden
 @app.route('/shutdown', methods=['POST'])
 def shutdown():
     func = request.environ.get('werkzeug.server.shutdown')
     if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
+        return 'Server kann nicht automatisch beendet werden. Bitte im Terminal stoppen.'
     func()
-    return 'Server shutting down...'
+    return render_template('shutdown.html')
 
 
 if __name__ == '__main__':
+    
+    # auf Config-Datei prüfen; erstellen, wenn nicht vorhanden
     get_config() 
-    # Konfigurationsdaten einlesen
+    
+    # Config-Daten einlesen
     config = read_config(config_path)   
+    
      # Config-Werte nutzen
     username = config.get("Benutzer", "username")
     activ_user = config.getboolean("Benutzer", "activ")
@@ -166,5 +176,7 @@ if __name__ == '__main__':
     url = config.get("Einstellungen", "url")
     limit = config.getint("Einstellungen", "limit")
     days = config.getint("Einstellungen", "days")
+
+    # Flask starten
     app.run(debug=True)
 
