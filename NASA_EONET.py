@@ -67,13 +67,18 @@ def events_to_dataframe(events):
         data = []
         for event in events['events']:
             for geometry in event['geometries']:
+                # Quellen-Infos extrahieren
+                sources = event.get('sources', [])
+                source_names = ', '.join([source.get('id', '') for source in sources])
+                source_urls = ', '.join([source.get('url', '') for source in sources])
                 event_data = {
                     'ID': event['id'],
                     'Title': event['title'],
                     'Description': event.get('description', 'No description available'),
                     'Link': event['link'],
                     'Categories': ', '.join([category['title'] for category in event['categories']]),
-                    'Sources': ', '.join([source['url'] for source in event['sources']]),
+                    'Sources': source_urls,
+                    'Source Names': source_names,
                     'Geometry Date': geometry['date'],
                     'Geometry Type': geometry['type'],
                     'Geometry Coordinates': geometry['coordinates']
