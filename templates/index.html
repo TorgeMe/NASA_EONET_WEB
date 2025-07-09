@@ -1,24 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
+    <meta charset="UTF-8">
     <title>NASA-EONET</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {font-family: Arial, sans-serif; margin: 40px;}
-        form {margin-bottom: 20px;}
-        input[type="text"], input[type="submit"] {margin-right: 10px;}
-        ul {padding: 0;}
-        li {list-style: none; margin-bottom: 10px;}
-        button {margin-left: 10px;}
+        body {
+            background: linear-gradient(120deg, #e0eafc, #cfdef3);
+            min-height: 100vh;
+        }
+        .main-card {
+            max-width: 500px;
+            margin: 60px auto;
+            padding: 2.5rem 2rem 2rem 2rem;
+            border-radius: 1.5rem;
+            background: #fff;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+        }
+        .main-card h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+        .btn-block {
+            width: 100%;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .btn-danger {
+            margin-top: 1.5rem;
+        }
+        .icon {
+            margin-right: 0.5rem;
+        }
     </style>
 </head>
 <body>
-    <h1>NASA-EONET</h1>
-    <form action="data", method="POST">
-        <input type="submit" value="Daten abrufen">
-    </form>
-    <form action="preferences", method="GET">
-        <input type="submit" value="Einstellungen">
-    </form>
-    <button class="btn btn-danger mt-3" onclick="fetch('/shutdown', {method: 'POST'}).then(() => window.close())">Beenden</button>
+    <div class="main-card shadow">
+        <h1 class="text-center">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="NASA Logo" style="height: 2.5rem; vertical-align: middle; margin-right: 0.5rem;">
+            NASA-EONET
+        </h1>
+        <form action="data" method="POST">
+            <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-database icon"></i>Daten abrufen</button>
+        </form>
+        <form action="preferences" method="GET">
+            <button type="submit" class="btn btn-secondary btn-block"><i class="fa-solid fa-sliders icon"></i>Einstellungen</button>
+        </form>
+        <button class="btn btn-danger btn-block" onclick="fetch('/shutdown', {method: 'POST'}).then(() => window.close())"><i class="fa-solid fa-power-off icon"></i>Beenden</button>
+    </div>
 </body>
 </html>
