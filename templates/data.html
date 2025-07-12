@@ -70,7 +70,7 @@
                     row.insertCell(5).innerText = event.Sources;
                     row.insertCell(6).innerText = event['Geometry Date'];
                     row.insertCell(7).innerText = event['Geometry Type'];
-                    row.insertCell(8).innerText = event['Geometry Coordinates'];
+                    row.insertCell(8).innerHTML = `${event['Geometry Coordinates']} <button class='btn btn-sm btn-outline-info ml-2' onclick='showOnMap(${JSON.stringify(event['Geometry Coordinates'])})'>Karte</button>`;
                 });
             });
         }
@@ -89,6 +89,26 @@
             .then(data => {
                 alert(data.message);
             });
+        }
+
+        function showOnMap(coords) {
+            // Unterstützt sowohl [lon, lat] als auch [lat, lon]
+            let lat, lon;
+            if (Array.isArray(coords)) {
+                if (coords.length === 2) {
+                    // EONET liefert [lon, lat], Google Maps erwartet [lat, lon]
+                    lon = coords[0];
+                    lat = coords[1];
+                } else if (coords.length === 1 && Array.isArray(coords[0])) {
+                    lon = coords[0][0];
+                    lat = coords[0][1];
+                }
+            }
+            if (typeof lat === 'number' && typeof lon === 'number') {
+                window.open(`https://www.google.com/maps?q=${lat},${lon}`, '_blank');
+            } else {
+                alert('Ungültige Koordinaten!');
+            }
         }
     </script>
 </body>
