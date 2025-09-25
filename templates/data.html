@@ -70,7 +70,34 @@
                     row.insertCell(5).innerText = event.Sources;
                     row.insertCell(6).innerText = event['Geometry Date'];
                     row.insertCell(7).innerText = event['Geometry Type'];
-                    row.insertCell(8).innerHTML = `${event['Geometry Coordinates']} <button class='btn btn-sm btn-outline-info ml-2' onclick='showOnMap(${JSON.stringify(event['Geometry Coordinates'])})'>Karte</button>`;
+                    // Geometry Coordinates + Google Earth Button
+                    const coordCell = row.insertCell(8);
+                    coordCell.innerText = event['Geometry Coordinates'];
+                    // Button mit Google Earth Logo
+                    const btn = document.createElement('button');
+                    btn.className = 'btn btn-outline-primary btn-sm ml-2';
+                    btn.style.verticalAlign = 'middle';
+                    btn.title = 'In Google Earth anzeigen';
+                    btn.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Google_Earth_icon.svg" alt="Google Earth" style="height:1.5em;">';
+                    btn.onclick = function() {
+                        const coords = event['Geometry Coordinates'];
+                        let lat, lng;
+                        if (Array.isArray(coords)) {
+                            lat = coords[1] || coords[0];
+                            lng = coords[0] || coords[1];
+                        } else if (typeof coords === 'string') {
+                            const parts = coords.split(',');
+                            lat = parseFloat(parts[1]) || parseFloat(parts[0]);
+                            lng = parseFloat(parts[0]) || parseFloat(parts[1]);
+                        }
+                        if (!isNaN(lat) && !isNaN(lng)) {
+                            const url = `https://earth.google.com/web/search/${lat},${lng}`;
+                            window.open(url, '_blank');
+                        } else {
+                            alert('Ungültige Koordinaten');
+                        }
+                    };
+                    coordCell.appendChild(btn);
                 });
             });
         }
@@ -89,26 +116,6 @@
             .then(data => {
                 alert(data.message);
             });
-        }
-
-        function showOnMap(coords) {
-            // Unterstützt sowohl [lon, lat] als auch [lat, lon]
-            let lat, lon;
-            if (Array.isArray(coords)) {
-                if (coords.length === 2) {
-                    // EONET liefert [lon, lat], Google Maps erwartet [lat, lon]
-                    lon = coords[0];
-                    lat = coords[1];
-                } else if (coords.length === 1 && Array.isArray(coords[0])) {
-                    lon = coords[0][0];
-                    lat = coords[0][1];
-                }
-            }
-            if (typeof lat === 'number' && typeof lon === 'number') {
-                window.open(`https://www.google.com/maps?q=${lat},${lon}`, '_blank');
-            } else {
-                alert('Ungültige Koordinaten!');
-            }
         }
     </script>
 </body>
