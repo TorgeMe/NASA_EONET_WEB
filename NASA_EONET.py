@@ -85,6 +85,12 @@ def events_to_dataframe(events):
                 }
                 data.append(event_data)
         df = pd.DataFrame(data)
+        if not df.empty:
+            # Sortiere nach Geometry Date von neu nach alt
+            df['Geometry Date'] = pd.to_datetime(df['Geometry Date'])
+            df = df.sort_values('Geometry Date', ascending=False)
+            # Formatieren als 'DD.MM.YYYY HH:MM'
+            df['Geometry Date'] = df['Geometry Date'].dt.strftime('%d.%m.%Y %H:%M')
         return df
     else:
         return pd.DataFrame()
