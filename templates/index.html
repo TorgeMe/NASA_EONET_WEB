@@ -42,15 +42,21 @@
     <div class="main-card shadow">
         <h1 class="text-center">
             <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="NASA Logo" style="height: 2.5rem; vertical-align: middle; margin-right: 0.5rem;">
-            NASA-Earth Observatory Natural Event Tracker 1.0.1
+            NASA-Earth Observatory Natural Event Tracker 1.0.2
         </h1>
-        <form action="data" method="POST">
-            <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-database icon"></i>Daten abrufen</button>
-        </form>
-        <form action="preferences" method="GET">
-            <button type="submit" class="btn btn-secondary btn-block"><i class="fa-solid fa-sliders icon"></i>Einstellungen</button>
-        </form>
-        <button class="btn btn-danger btn-block" onclick="fetch('/shutdown', {method: 'POST'}).then(() => window.close())"><i class="fa-solid fa-power-off icon"></i>Beenden</button>
+        <p class="text-center mb-4" style="color:#34495e; font-size:1.1rem;">
+            Willkommen! Mit diesem Tool können Sie aktuelle Naturereignisse weltweit abrufen, Ihre Einstellungen anpassen und die Anwendung bequem beenden.<br>
+            Wählen Sie eine Option aus dem Menü:
+        </p>
+        <div class="d-flex flex-column align-items-center">
+            <form action="data" method="POST" style="width:100%;">
+                <button type="submit" class="btn btn-primary btn-block mb-2"><i class="fa-solid fa-database icon"></i>Daten abrufen</button>
+            </form>
+            <form action="preferences" method="GET" style="width:100%;">
+                <button type="submit" class="btn btn-secondary btn-block mb-2"><i class="fa-solid fa-sliders icon"></i>Einstellungen</button>
+            </form>
+            <button class="btn btn-danger btn-block" style="width:100%;" onclick="fetch('/shutdown', {method: 'POST'}).then(() => window.close())"><i class="fa-solid fa-power-off icon"></i>Beenden</button>
+        </div>
     </div>
 </body>
 </html>
